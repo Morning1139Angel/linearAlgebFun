@@ -1,48 +1,58 @@
 import numpy as np
-from sympy import Matrix
 
-is_not_zero = lambda column : np.any(column)
-get_max_abs_val_indx = lambda vect : np.argmax(np.abs(vect))
-netrulize= lambda vect, base, pos : vect - ((vect[pos] * base))
+def main():
+    A = np.array([[1,0,2],[0,2,6],[1,1,1]], dtype='d')
+    row_echelon_form(A)
+    print(A)
+
+def row_echelon_form(A):
+    if not has_nonzero_(A) : return A
+    pivot_col_num = get_leftmost_nonzero_column(A)
+
+    select_and_move_pivot_up(A, pivot_col_num)
+
+    make_below_pivot_zero(A, pivot_col_num)
+
+    remaining_sub_matrix = A[1:]
+    row_echelon_form(remaining_sub_matrix)
 
 
-def get_first_none_zero_column(A):
-    columns_count = A.shape[1]
-    for i in range(columns_count):
-        col = A[:, i]
+#=========================================================
+has_nonzero_= lambda A : A.any()
+#=========================================================
+def get_leftmost_nonzero_column(A):
+    for i in range(A.shape[1]):
+        ith_col = A[:, i]
+        if vect_is_not_zero(ith_col):
+            return i
+
+
+vect_is_not_zero = lambda vect : np.any(vect)
+#=========================================================        
+def select_and_move_pivot_up(A, pivot_col_num):
+    pivot_row_num = max_abs_val_row_num(pivot_col_num)
+    pivot = A[pivot_row_num, pivot_col_num]
         
-
-        if is_not_zero(col):
-            return True, col, i
-    return False, None, -1
-
-def transform_2_echelon_f(A):
-    has_none_zero_col, col, pivot_colmn = get_first_none_zero_column(A)
-    if not has_none_zero_col : 
-        return
-    else:
-        setup_pivot(A, col)
-        remaining_mtx = A[1:]
-        rows_count = remaining_mtx.shape[0]
-        if (rows_count != 0 ):
-            A[1:] = np.apply_along_axis(netrulize, 1, A[1:], A[0], pivot_colmn)
-            transform_2_echelon_f(A[1:])
+    #normalize row
+    A[pivot_row_num] /= pivot
+    #bring to the top
+    swap_rows(A, 0, pivot_row_num)
 
 
-def setup_pivot(A, col):
-    pivot_row = get_max_abs_val_indx(col)
-    pivot = col[pivot_row]
-        
-        #normalize row
-    A[pivot_row] /= pivot
-        #bring to the top
-    swap_rows(A, 0, pivot_row)
-
+max_abs_val_row_num = lambda vect : np.argmax(np.abs(vect))
 
 def swap_rows(mtx, indx1, indx2):
     mtx[[indx1, indx2]] = mtx[[indx2, indx1]]
+#=========================================================
+def make_below_pivot_zero(A, pivot_col_num):
+    remaining_mtx = A[1:]
+    rows_count = remaining_mtx.shape[0]
+    if (rows_count != 0 ):
+        A[1:] = np.apply_along_axis(replace, 1, A[1:], A[0], pivot_col_num)
 
 
-A = np.array([[1,0,2],[0,2,6],[1,1,1]], dtype='d')
-transform_2_echelon_f(A)
-print(A)
+replace= lambda row, pivot_row_vect, pivot_col_num : row - ((row[pivot_col_num] * pivot_row_vect))
+#=========================================================
+
+if __name__ == "__main__":
+    main()
