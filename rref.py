@@ -6,7 +6,7 @@ def main():
     print(A)
 
 def row_echelon_form(A):
-    if not has_nonzero_(A) : return A
+    if not has_nonzero(A) : return A
     pivot_col_num = get_leftmost_nonzero_column(A)
 
     select_and_move_pivot_up(A, pivot_col_num)
@@ -18,7 +18,7 @@ def row_echelon_form(A):
 
 
 #=========================================================
-has_nonzero_= lambda A : A.any()
+has_nonzero= lambda A : A.any()
 #=========================================================
 def get_leftmost_nonzero_column(A):
     for i in range(A.shape[1]):
