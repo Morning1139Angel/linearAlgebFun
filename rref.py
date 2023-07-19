@@ -1,10 +1,21 @@
 import numpy as np
 
 def main():
-    A = np.array([[1,7,3,-4],[0,1,-1,3],[0,0,0,1],[0,0,1,-2]], dtype='d')
-    row_echelon_form(A)
+    A = np.array([[ 1, 2, 3, 4],
+                  [ 5, 6, 7, 8],
+                  [ 6, 7, 8, 9],], dtype='d')
+    reduced_row_echelon_form(A)
     print(A)
 
+def reduced_row_echelon_form(A):
+    row_echelon_form(A)
+    row_count = A.shape[0]
+    for i in range(row_count-1, -1, -1):
+        ith_row = A[i]
+        if not ith_row.any() : continue
+
+        make_above_pivot_0(A, i, ith_row)
+ 
 def row_echelon_form(A):
     if not has_nonzero(A) : return A
     pivot_col_num = get_leftmost_nonzero_column(A)
@@ -52,6 +63,12 @@ def make_below_pivot_zero(A, pivot_col_num):
 
 
 replace= lambda row, pivot_row_vect, pivot_col_num : row - ((row[pivot_col_num] * pivot_row_vect))
+#=========================================================
+def make_above_pivot_0(A, i, ith_row):
+    pivot_column_num = np.nonzero(ith_row)[0][0]
+    cropped_view = A[:i+1, pivot_column_num:]
+    make_below_pivot_zero(cropped_view[::-1], 0)
+   
 #=========================================================
 
 if __name__ == "__main__":
