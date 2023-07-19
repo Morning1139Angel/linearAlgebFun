@@ -1,7 +1,7 @@
 import numpy as np
 
 def main():
-    A = np.array([[1,0,2],[0,2,6],[1,1,1]], dtype='d')
+    A = np.array([[1,7,3,-4],[0,1,-1,3],[0,0,0,1],[0,0,1,-2]], dtype='d')
     row_echelon_form(A)
     print(A)
 
@@ -30,7 +30,7 @@ def get_leftmost_nonzero_column(A):
 vect_is_not_zero = lambda vect : np.any(vect)
 #=========================================================        
 def select_and_move_pivot_up(A, pivot_col_num):
-    pivot_row_num = max_abs_val_row_num(pivot_col_num)
+    pivot_row_num = max_abs_val_row_num(A[:,pivot_col_num])
     pivot = A[pivot_row_num, pivot_col_num]
         
     #normalize row
